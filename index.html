@@ -58,6 +58,40 @@
             text-transform: uppercase;
         }
         
+        .filtros-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+            padding: 0 20px;
+        }
+        
+        .filtro-btn {
+            background: white;
+            color: #1a1a2e;
+            border: 3px solid #1a1a2e;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .filtro-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .filtro-btn.active {
+            background: #ff0000;
+            color: white;
+            border-color: #ff0000;
+        }
+        
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -70,19 +104,88 @@
             padding: 20px 0;
         }
         
+        .producto-card.hidden {
+            display: none;
+        }
+        
         .producto-card {
-            background: white;
+            background: transparent;
+            border-radius: 15px;
+            height: 500px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        
+        .producto-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .producto-card.flipped .producto-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .producto-card-front,
+        .producto-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: white;
+        }
+        
+        .producto-card-front {
             display: flex;
             flex-direction: column;
         }
         
-        .producto-card:hover {
-            transform: translateY(-10px);
+        .producto-card-back {
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+        
+        .producto-card:hover .producto-card-front {
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+        }
+        
+        .qr-container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .qr-code {
+            width: 280px;
+            height: 280px;
+            display: block;
+        }
+        
+        .qr-label {
+            color: white;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9em;
+            font-weight: 700;
+        }
+        
+        .codigo-articulo {
+            color: #ff0000;
+            font-size: 1.3em;
+            font-weight: 900;
+            margin-top: 10px;
+            letter-spacing: 2px;
         }
         
         .producto-imagen {
@@ -97,6 +200,15 @@
             flex-grow: 1;
             display: flex;
             flex-direction: column;
+        }
+        
+        .producto-marca {
+            font-size: 0.85em;
+            color: #ff0000;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
         }
         
         .producto-nombre {
@@ -165,169 +277,390 @@
             <div class="promocion">
                 MARCAS Y PRODUCTOS SELECCIONADOS
             </div>
+            <div class="filtros-container">
+                <button class="filtro-btn active" onclick="filtrarMarca('todos', this)">TODOS</button>
+                <button class="filtro-btn" onclick="filtrarMarca('New Balance', this)">NEW BALANCE</button>
+                <button class="filtro-btn" onclick="filtrarMarca('Reebok', this)">REEBOK</button>
+            </div>
         </div>
         
         <div class="productos-grid">
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1754079641/RBK1100025779.jpg" alt="ENERGEN TECH PLUS" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">ENERGEN TECH PLUS</div>
-                    <div class="producto-precio">$89,999.00</div>
-                    <div class="cuotas">3 cuotas de $30,000</div>
+            <div class="producto-card" data-marca="Reebok" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1754079641/RBK1100025779.jpg" alt="ENERGEN TECH PLUS" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">Reebok</div>
+                            <div class="producto-nombre">ENERGEN TECH PLUS</div>
+                            <div class="producto-precio">$89,999.00</div>
+                            <div class="cuotas">3 cuotas de $30,000</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=RBK1100025779" alt="QR RBK1100025779" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">RBK1100025779</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1752786990/RBK1100033968.jpg" alt="ENERGEN RUN 3" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">ENERGEN RUN 3</div>
-                    <div class="producto-precio">$89,999.00</div>
-                    <div class="cuotas">3 cuotas de $30,000</div>
+            <div class="producto-card" data-marca="Reebok" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1752786990/RBK1100033968.jpg" alt="ENERGEN RUN 3" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">Reebok</div>
+                            <div class="producto-nombre">ENERGEN RUN 3</div>
+                            <div class="producto-precio">$89,999.00</div>
+                            <div class="cuotas">3 cuotas de $30,000</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=RBK1100033968" alt="QR RBK1100033968" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">RBK1100033968</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1753214634/RBK1100025288.jpg" alt="ENERGEN TECH PLUS" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">ENERGEN TECH PLUS</div>
-                    <div class="producto-precio">$89,999.00</div>
-                    <div class="cuotas">3 cuotas de $30,000</div>
+            <div class="producto-card" data-marca="Reebok" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1753214634/RBK1100025288.jpg" alt="ENERGEN TECH PLUS" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">Reebok</div>
+                            <div class="producto-nombre">ENERGEN TECH PLUS</div>
+                            <div class="producto-precio">$89,999.00</div>
+                            <div class="cuotas">3 cuotas de $30,000</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=RBK1100025288" alt="QR RBK1100025288" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">RBK1100025288</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1752786988/RBK1100025756.jpg" alt="ENERGEN RUN 3" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">ENERGEN RUN 3</div>
-                    <div class="producto-precio">$89,999.00</div>
-                    <div class="cuotas">3 cuotas de $30,000</div>
+            <div class="producto-card" data-marca="Reebok" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1752786988/RBK1100025756.jpg" alt="ENERGEN RUN 3" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">Reebok</div>
+                            <div class="producto-nombre">ENERGEN RUN 3</div>
+                            <div class="producto-precio">$89,999.00</div>
+                            <div class="cuotas">3 cuotas de $30,000</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=RBK1100025756" alt="QR RBK1100025756" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">RBK1100025756</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1752786989/RBK1100033967.jpg" alt="ENERGEN RUN 3" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">ENERGEN RUN 3</div>
-                    <div class="producto-precio">$89,999.00</div>
-                    <div class="cuotas">3 cuotas de $30,000</div>
+            <div class="producto-card" data-marca="Reebok" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1752786989/RBK1100033967.jpg" alt="ENERGEN RUN 3" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">Reebok</div>
+                            <div class="producto-nombre">ENERGEN RUN 3</div>
+                            <div class="producto-precio">$89,999.00</div>
+                            <div class="cuotas">3 cuotas de $30,000</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=RBK1100033967" alt="QR RBK1100033967" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">RBK1100033967</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1763416274/U530ESA.jpg" alt="U530ESA" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">U530ESA</div>
-                    <div class="producto-precio">$182,999.00</div>
-                    <div class="cuotas">3 cuotas de $61,000</div>
+            <div class="producto-card" data-marca="New Balance" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1763416274/U530ESA.jpg" alt="U530ESA" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">New Balance</div>
+                            <div class="producto-nombre">U530ESA</div>
+                            <div class="producto-precio">$182,999.00</div>
+                            <div class="cuotas">3 cuotas de $61,000</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=U530ESA" alt="QR U530ESA" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">U530ESA</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1763416276/U530ESB.jpg" alt="U530ESB" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">U530ESB</div>
-                    <div class="producto-precio">$182,999.00</div>
-                    <div class="cuotas">3 cuotas de $61,000</div>
+            <div class="producto-card" data-marca="New Balance" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1763416276/U530ESB.jpg" alt="U530ESB" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">New Balance</div>
+                            <div class="producto-nombre">U530ESB</div>
+                            <div class="producto-precio">$182,999.00</div>
+                            <div class="cuotas">3 cuotas de $61,000</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=U530ESB" alt="QR U530ESB" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">U530ESB</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1766778265/WL574RTS.jpg" alt="WL574RTS" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">WL574RTS</div>
-                    <div class="producto-precio">$139,999.00</div>
-                    <div class="cuotas">3 cuotas de $46,700</div>
+            <div class="producto-card" data-marca="New Balance" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1766778265/WL574RTS.jpg" alt="WL574RTS" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">New Balance</div>
+                            <div class="producto-nombre">WL574RTS</div>
+                            <div class="producto-precio">$139,999.00</div>
+                            <div class="cuotas">3 cuotas de $46,700</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=WL574RTS" alt="QR WL574RTS" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">WL574RTS</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1763416277/U530SEA.jpg" alt="U530SEA" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">U530SEA</div>
-                    <div class="producto-precio">$182,999.00</div>
-                    <div class="cuotas">3 cuotas de $61,000</div>
+            <div class="producto-card" data-marca="New Balance" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1763416277/U530SEA.jpg" alt="U530SEA" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">New Balance</div>
+                            <div class="producto-nombre">U530SEA</div>
+                            <div class="producto-precio">$182,999.00</div>
+                            <div class="cuotas">3 cuotas de $61,000</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=U530SEA" alt="QR U530SEA" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">U530SEA</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1766459035/WL574PBK.jpg" alt="WL574PBK" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">WL574PBK</div>
-                    <div class="producto-precio">$139,999.00</div>
-                    <div class="cuotas">3 cuotas de $46,700</div>
+            <div class="producto-card" data-marca="New Balance" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1766459035/WL574PBK.jpg" alt="WL574PBK" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">New Balance</div>
+                            <div class="producto-nombre">WL574PBK</div>
+                            <div class="producto-precio">$139,999.00</div>
+                            <div class="cuotas">3 cuotas de $46,700</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=WL574PBK" alt="QR WL574PBK" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">WL574PBK</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1759353448/U327LNC.jpg" alt="U327LNC" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">U327LNC</div>
-                    <div class="producto-precio">$139,999.00</div>
-                    <div class="cuotas">3 cuotas de $46,700</div>
+            <div class="producto-card" data-marca="New Balance" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1759353448/U327LNC.jpg" alt="U327LNC" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">New Balance</div>
+                            <div class="producto-nombre">U327LNC</div>
+                            <div class="producto-precio">$139,999.00</div>
+                            <div class="cuotas">3 cuotas de $46,700</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=U327LNC" alt="QR U327LNC" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">U327LNC</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1763416278/U530SEB.jpg" alt="U530SEB" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">U530SEB</div>
-                    <div class="producto-precio">$182,999.00</div>
-                    <div class="cuotas">3 cuotas de $61,000</div>
+            <div class="producto-card" data-marca="New Balance" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1763416278/U530SEB.jpg" alt="U530SEB" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">New Balance</div>
+                            <div class="producto-nombre">U530SEB</div>
+                            <div class="producto-precio">$182,999.00</div>
+                            <div class="cuotas">3 cuotas de $61,000</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=U530SEB" alt="QR U530SEB" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">U530SEB</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1759353446/U327LNA.jpg" alt="U327LNA" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">U327LNA</div>
-                    <div class="producto-precio">$139,999.00</div>
-                    <div class="cuotas">3 cuotas de $46,700</div>
+            <div class="producto-card" data-marca="New Balance" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1759353446/U327LNA.jpg" alt="U327LNA" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">New Balance</div>
+                            <div class="producto-nombre">U327LNA</div>
+                            <div class="producto-precio">$139,999.00</div>
+                            <div class="cuotas">3 cuotas de $46,700</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=U327LNA" alt="QR U327LNA" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">U327LNA</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1759353447/U327LNB.jpg" alt="U327LNB" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">U327LNB</div>
-                    <div class="producto-precio">$139,999.00</div>
-                    <div class="cuotas">3 cuotas de $46,700</div>
+            <div class="producto-card" data-marca="New Balance" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1759353447/U327LNB.jpg" alt="U327LNB" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">New Balance</div>
+                            <div class="producto-nombre">U327LNB</div>
+                            <div class="producto-precio">$139,999.00</div>
+                            <div class="cuotas">3 cuotas de $46,700</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=U327LNB" alt="QR U327LNB" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">U327LNB</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1766778256/U574SBK.jpg" alt="U574SBK" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">U574SBK</div>
-                    <div class="producto-precio">$139,999.00</div>
-                    <div class="cuotas">3 cuotas de $46,700</div>
+            <div class="producto-card" data-marca="New Balance" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1766778256/U574SBK.jpg" alt="U574SBK" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">New Balance</div>
+                            <div class="producto-nombre">U574SBK</div>
+                            <div class="producto-precio">$139,999.00</div>
+                            <div class="cuotas">3 cuotas de $46,700</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=U574SBK" alt="QR U574SBK" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">U574SBK</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1767196471/WL574RBL.jpg" alt="WL574RBL" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">WL574RBL</div>
-                    <div class="producto-precio">$139,999.00</div>
-                    <div class="cuotas">3 cuotas de $46,700</div>
+            <div class="producto-card" data-marca="New Balance" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1767196471/WL574RBL.jpg" alt="WL574RBL" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">New Balance</div>
+                            <div class="producto-nombre">WL574RBL</div>
+                            <div class="producto-precio">$139,999.00</div>
+                            <div class="cuotas">3 cuotas de $46,700</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=WL574RBL" alt="QR WL574RBL" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">WL574RBL</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1769464041/WS327KAZ.jpg" alt="WS327KAZ" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">WS327KAZ</div>
-                    <div class="producto-precio">$139,999.00</div>
-                    <div class="cuotas">3 cuotas de $46,700</div>
+            <div class="producto-card" data-marca="New Balance" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1769464041/WS327KAZ.jpg" alt="WS327KAZ" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">New Balance</div>
+                            <div class="producto-nombre">WS327KAZ</div>
+                            <div class="producto-precio">$139,999.00</div>
+                            <div class="cuotas">3 cuotas de $46,700</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=WS327KAZ" alt="QR WS327KAZ" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">WS327KAZ</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="producto-card">
-                <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1766459032/NM574VAN.jpg" alt="NM574VAN" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
-                <div class="producto-info">
-                    <div class="producto-nombre">NM574VAN</div>
-                    <div class="producto-precio">$134,999.00</div>
-                    <div class="cuotas">3 cuotas de $45,000</div>
+            <div class="producto-card" data-marca="New Balance" onclick="this.classList.toggle('flipped')">
+                <div class="producto-card-inner">
+                    <div class="producto-card-front">
+                        <img src="https://res.cloudinary.com/djtmfeic2/image/upload/v1766459032/NM574VAN.jpg" alt="NM574VAN" class="producto-imagen" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22280%22 height=%22280%22/%3E%3Ctext fill=%22%23999%22 font-family=%22Arial%22 font-size=%2216%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3ESin imagen%3C/text%3E%3C/svg%3E'">
+                        <div class="producto-info">
+                            <div class="producto-marca">New Balance</div>
+                            <div class="producto-nombre">NM574VAN</div>
+                            <div class="producto-precio">$134,999.00</div>
+                            <div class="cuotas">3 cuotas de $45,000</div>
+                        </div>
+                    </div>
+                    <div class="producto-card-back">
+                        <div class="qr-container">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=NM574VAN" alt="QR NM574VAN" class="qr-code">
+                        </div>
+                        <div class="qr-label">Código del Artículo</div>
+                        <div class="codigo-articulo">NM574VAN</div>
+                    </div>
                 </div>
             </div>
 
@@ -339,5 +672,39 @@
             <p>En cualquier Marathon Deportes</p>
         </div>
     </div>
+    
+    <script>
+        function filtrarMarca(marca, btn) {
+            // Obtener todas las tarjetas
+            const tarjetas = document.querySelectorAll('.producto-card');
+            const botones = document.querySelectorAll('.filtro-btn');
+            
+            // Remover clase active de todos los botones
+            botones.forEach(b => b.classList.remove('active'));
+            
+            // Agregar clase active al botón clickeado
+            btn.classList.add('active');
+            
+            // Filtrar tarjetas
+            tarjetas.forEach(tarjeta => {
+                const marcaTarjeta = tarjeta.getAttribute('data-marca');
+                
+                if (marca === 'todos') {
+                    tarjeta.classList.remove('hidden');
+                } else {
+                    if (marcaTarjeta === marca) {
+                        tarjeta.classList.remove('hidden');
+                    } else {
+                        tarjeta.classList.add('hidden');
+                    }
+                }
+                
+                // Si la tarjeta estaba volteada, voltearla de vuelta al filtrar
+                if (tarjeta.classList.contains('flipped')) {
+                    tarjeta.classList.remove('flipped');
+                }
+            });
+        }
+    </script>
 </body>
 </html>
