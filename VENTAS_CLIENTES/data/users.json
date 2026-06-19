@@ -1,0 +1,27 @@
+[
+  {
+    "username": "aguilares",
+    "password_hash": "781b314a484949a166bc99851dcb4e9ec335555fce4222090a9e612f5530e195",
+    "branch": "aguilares"
+  },
+  {
+    "username": "bajo",
+    "password_hash": "9124dac35dbe67499ebdb43934e7377e17222ef51376a108e8a940488cb12658",
+    "branch": "bajo"
+  },
+  {
+    "username": "con1",
+    "password_hash": "6f00be409cca55c287cdc9b8a2671ff19cf9b564f49b78bfd65553b5c0bcd75f",
+    "branch": "con1"
+  },
+  {
+    "username": "monteros",
+    "password_hash": "ebd6013f74932ea9bd43b0ae64d50c20eee7af2d54503255f78774bffbaa9fda",
+    "branch": "monteros"
+  },
+  {
+    "username": "tafi",
+    "password_hash": "21af6a49cf92df6859057879dfe1fbf43a6de081863396a7a31009f78d51838a",
+    "branch": "tafi"
+  }
+]
